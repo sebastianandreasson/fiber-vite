@@ -24,7 +24,9 @@ const SliderContainer = styled.div`
 const Slider = (props) => {
   return (
     <SliderContainer>
-      <span>{props.name}</span>
+      <span>
+        {props.name} - {props.value}
+      </span>
       <input
         type="range"
         {...props}
@@ -60,7 +62,7 @@ const NoiseControls = () => {
         name="scale"
         value={noiseSettings.scale}
         min={0}
-        max={5}
+        max={100}
         step={0.1}
         onChange={onChange}
       />
@@ -68,8 +70,8 @@ const NoiseControls = () => {
         name="persistence"
         value={noiseSettings.persistence}
         min={0}
-        step={0.1}
-        max={5}
+        step={0.05}
+        max={4}
         onChange={onChange}
       />
       <Slider
@@ -77,7 +79,15 @@ const NoiseControls = () => {
         value={noiseSettings.lacunarity}
         min={0}
         step={0.05}
-        max={2}
+        max={5}
+        onChange={onChange}
+      />
+      <Slider
+        name="heightMultiplier"
+        value={noiseSettings.heightMultiplier}
+        min={0}
+        step={0.1}
+        max={10}
         onChange={onChange}
       />
       <Slider
@@ -88,6 +98,9 @@ const NoiseControls = () => {
         max={10}
         onChange={onChange}
       />
+      <button onClick={() => onChange('seed', noiseSettings.seed + 1)}>
+        seed - {noiseSettings.seed}
+      </button>
     </Container>
   )
 }

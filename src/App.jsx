@@ -1,78 +1,53 @@
-import React, { useRef } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import React, { Suspense } from 'react'
+import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Sky, softShadows, Stats } from '@react-three/drei'
-import Terrain from './Terrain'
-import { EffectComposer } from '@react-three/postprocessing'
+import { EffectComposer, Pixelation } from '@react-three/postprocessing'
+
 import NoiseControls from './ui/NoiseControls'
+import World from './components/World'
+import Player from './components/Player'
+import Water from './components/Water'
+import PlayerControls from './ui/PlayerControls'
 
-softShadows()
-
-const Box = ({ passedRef }) => {
-  useFrame(() => {
-    passedRef.current.rotation.x += 0.001
-    passedRef.current.rotation.y += 0.001
-  })
-
-  return (
-    <mesh
-      ref={passedRef}
-      castShadow
-      receiveShadow
-      position={[0, 1.5, 0]}
-      scale={1}
-    >
-      <boxBufferGeometry />
-      <meshStandardMaterial attach="material" color="orange" />
-    </mesh>
-  )
-}
-
-const Plane = () => {
-  return (
-    <mesh
-      receiveShadow
-      castShadow
-      rotation={[-Math.PI / 2, 0, 0]}
-      scale={[300, 300, 0.2]}
-    >
-      <planeBufferGeometry />
-      <meshStandardMaterial color="gray" />
-    </mesh>
-  )
-}
+// softShadows()
 
 export default function App() {
-  const boxRef = useRef()
-
   return (
     <>
       <div id="canvas">
-        <Canvas shadows camera={{ position: [3, 3, 3] }}>
-          <Sky azimuth={1} inclination={0.6} distance={1000} />
+        <Canvas
+          shadows
+          camera={{ position: [30, 30, 30], near: 1, far: 1000 }}
+          dpr={[1, 2]}
+        >
+          <Sky azimuth={1} inclination={0.6} distance={100} />
+          {/* <fog attach="fog" args={['lightblue', 16, 70]} /> */}
           <OrbitControls />
           <ambientLight intensity={1} />
-          <directionalLight
+          {/* <directionalLight
             intensity={1}
             castShadow
             shadow-mapSize-height={512}
             shadow-mapSize-width={512}
-          />
+          /> */}
           <pointLight
             castShadow
-            position={[2, 1, 2]}
-            color="red"
+            position={[2, 10, 2]}
+            color="#eee5b5"
             intensity={4}
           />
-          <Box passedRef={boxRef} />
-          <Terrain />
+          <World />
+          <Player />
+          <Suspense fallback={null}>{/* <Water /> */}</Suspense>
           <EffectComposer>
-            {/* <Pixelation granularity={2} /> */}
+            {/* <Pixelation granularity={8} /> */}
           </EffectComposer>
           <Stats showPanel={0} className="stats" />
         </Canvas>
       </div>
       <div id="ui">
         <NoiseControls />
+        {/* <PlayerControls /> */}
       </div>
     </>
   )

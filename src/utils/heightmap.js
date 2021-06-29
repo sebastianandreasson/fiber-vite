@@ -1,9 +1,35 @@
 import SimplexNoise from 'simplex-noise'
 
-export const createHeightMap = (size, settings) => {
+const clamp = () => {}
+
+const inverseLerp = (x, a, b) => (x - a) / (b - a)
+
+const maxPossibleHeight = (octaves, persistence) => {
+  let max = 0
+  let amplitude = 1
+  for (let i = 0; i < octaves; i++) {
+    max += amplitude
+    amplitude *= persistence
+  }
+  return max
+}
+
+export const createHeightMap = (size, settings, xOffset, yOffset) => {
   let half = size / 2
   const simplex = new SimplexNoise(settings.seed)
   let map = []
+
+  const maxHeight = maxPossibleHeight(settings.octaves, settings.persistence)
+  let minValue = Number.MAX_VALUE
+  let maxValue = -Number.MAX_VALUE
+  const octaveOffsets = []
+
+  for (let i = 0; i < settings.octaves; i++) {
+    octaveOffsets.push({
+      x: simplex.noise2D(i * 10, i * 10),
+      y: simplex.noise2D((i + 1) * 20, (i + 1) * 20),
+    })
+  }
 
   for (let y = 0; y < size; y++) {
     map.push([])
@@ -13,8 +39,12 @@ export const createHeightMap = (size, settings) => {
       let value = 0
 
       for (let i = 0; i < settings.octaves; i++) {
-        let sampleX = ((x - half) / settings.scale) * frequency
-        let sampleY = ((y - half) / settings.scale) * frequency
+        let sampleX =
+          ((x - half + octaveOffsets[i].x + xOffset * size) / settings.scale) *
+          frequency
+        let sampleY =
+          ((y - half + octaveOffsets[i].y + yOffset * size) / settings.scale) *
+          frequency
 
         let noiseValue = simplex.noise2D(sampleX, sampleY) * 2 - 1
 
@@ -23,9 +53,26 @@ export const createHeightMap = (size, settings) => {
         amplitude *= settings.persistence
         frequency *= settings.lacunarity
       }
-      if (value < settings.floor) value = settings.floor
+
+      if (maxValue < value) {
+        maxValue = value
+      }
+      if (minValue > value) {
+        minValue = value
+      }
+
       map[y][x] = value
+      // const normalizedValue = value + 1 / (2 * maxHeight)
+      // map[y][x] = normalizedValue * settings.heightMultiplier
     }
   }
+
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      map[y][x] =
+        inverseLerp(map[y][x], minValue, maxValue) * settings.heightMultiplier
+    }
+  }
+
   return map
 }
