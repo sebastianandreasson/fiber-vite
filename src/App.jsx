@@ -38,7 +38,9 @@ export default function App() {
           />
           <World />
           <Player />
-          <Suspense fallback={null}>{/* <Water /> */}</Suspense>
+          <Suspense fallback={null}>
+            <Water />
+          </Suspense>
           <EffectComposer>
             {/* <Pixelation granularity={8} /> */}
           </EffectComposer>

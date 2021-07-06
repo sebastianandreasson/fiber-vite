@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 
 export const LOD_LEVELS = []
-export const TERRAIN_CHUNK_SIZE = 25
+export const TERRAIN_CHUNK_SIZE = 75
 
 export const noiseSettingsAtom = atom({
   xOff: 0,
@@ -11,7 +11,7 @@ export const noiseSettingsAtom = atom({
   scale: 80,
   persistence: 0.5,
   lacunarity: 2.5,
-  heightMultiplier: 6,
+  heightMultiplier: 25,
   floor: -10,
   // LOD:
 })

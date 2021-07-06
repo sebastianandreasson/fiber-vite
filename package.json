@@ -20,7 +20,10 @@
   },
   "homepage": "https://github.com/sebastianandreasson/fiber-vite#readme",
   "devDependencies": {
-    "vite": "^2.3.8"
+    "@babel/core": "^7.14.6",
+    "babel-plugin-glsl": "^1.0.0",
+    "vite": "^2.3.8",
+    "vite-plugin-babel-macros": "^1.0.5"
   },
   "dependencies": {
     "@react-three/drei": "^6.2.2",

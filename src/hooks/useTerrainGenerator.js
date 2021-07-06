@@ -6,7 +6,7 @@ import {
   terrainChunksAtom,
   TERRAIN_CHUNK_SIZE,
 } from '../state'
-import { createHeightMap } from '../utils/heightmap'
+import { chunkForOffset, createHeightMap } from '../utils/heightmap'
 import { gridPositionsForCenter } from '../utils/terrain'
 
 const useTerrainGenerator = () => {
@@ -19,7 +19,13 @@ const useTerrainGenerator = () => {
   }, [noiseSettings, setTerrainChunks])
 
   useEffect(() => {
-    console.log('terrainGen useEffect')
+    const heightMap = createHeightMap(
+      TERRAIN_CHUNK_SIZE * 3,
+      noiseSettings,
+      -1,
+      -1
+    )
+
     const positions = gridPositionsForCenter(player.position)
 
     let newChunks = {}
@@ -28,11 +34,11 @@ const useTerrainGenerator = () => {
       if (!terrainChunks[key]) {
         newChunks[key] = {
           position: pos,
-          heightMap: createHeightMap(
+          heightMap: chunkForOffset(
+            heightMap,
             TERRAIN_CHUNK_SIZE,
-            noiseSettings,
-            pos.x,
-            pos.y
+            pos.x + 1,
+            pos.y + 1
           ),
         }
       }

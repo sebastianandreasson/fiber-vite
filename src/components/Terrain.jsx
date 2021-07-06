@@ -30,7 +30,7 @@ const Terrain = ({ heightMap, position }) => {
       castShadow
       position={[
         position.x * TERRAIN_CHUNK_SIZE,
-        0,
+        -10,
         position.y * TERRAIN_CHUNK_SIZE,
       ]}
     >
@@ -43,6 +43,7 @@ const Terrain = ({ heightMap, position }) => {
           TERRAIN_CHUNK_SIZE - 1,
         ]}
       />
+      {/* <terrainMaterial /> */}
       <meshStandardMaterial
         // wireframe
         attach="material"

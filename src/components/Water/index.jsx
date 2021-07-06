@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { useFBO, useTexture } from '@react-three/drei'
-import { DepthFadeMaterial } from '../../shaders/depthFade'
 import { useFrame, useThree } from '@react-three/fiber'
 
 import rampTextureUrl from './ramp.png'
+import { generateCausticCanvasTexture } from './utils'
 
 const u_factor = 2.5
 const u_noise_scale = 340
@@ -15,6 +15,9 @@ const Water = () => {
   const [dpr, size] = useThree(({ viewport, size }) => [viewport.dpr, size])
   const camera = useThree((state) => state.camera)
   const u_ramp = useTexture(rampTextureUrl)
+  const voronoiTexture = useMemo(() => {
+    return generateCausticCanvasTexture(10)
+  })
 
   const depthFBO = useFBO(size.width * dpr, size.height * dpr, {
     encoding: THREE.sRGBEncoding,
@@ -62,6 +65,7 @@ const Water = () => {
           cameraFar={camera.far}
           transparent
           depthWrite={false}
+          u_texture={voronoiTexture}
           u_depth={depthFBO?.depthTexture}
           u_factor={u_factor}
           u_noise_scale={u_noise_scale}

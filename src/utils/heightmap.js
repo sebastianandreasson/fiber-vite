@@ -1,6 +1,17 @@
 import SimplexNoise from 'simplex-noise'
 
-const clamp = () => {}
+export const chunkForOffset = (heightMap, chunkSize, xOff, yOff) => {
+  const map = []
+  const xOffAmount = xOff * chunkSize
+  const yOffAmount = yOff * chunkSize
+  for (let y = 0; y < chunkSize; y++) {
+    map.push([])
+    for (let x = 0; x < chunkSize; x++) {
+      map[y][x] = heightMap[y + yOffAmount][x + xOffAmount]
+    }
+  }
+  return map
+}
 
 const inverseLerp = (x, a, b) => (x - a) / (b - a)
 
